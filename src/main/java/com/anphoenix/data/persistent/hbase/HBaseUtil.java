@@ -17,6 +17,8 @@ import java.util.Map;
  */
 public class HBaseUtil {
 
+    public static String ROW_KEY = "rowkey";
+
     static Configuration conf = null;
     static {
         conf = HBaseConfiguration.create();
@@ -44,7 +46,7 @@ public class HBaseUtil {
         HTable table = new HTable(conf, Bytes.toBytes(tableName));
         List<Put> puts = new ArrayList<Put>();
         for(Map<String, String> object : objects){
-            String rowKey = object.get("rowkey");
+            String rowKey = object.get(ROW_KEY);
             Put put = new Put(Bytes.toBytes(rowKey));
 
             for(Map.Entry<String, String> attr : object.entrySet()){

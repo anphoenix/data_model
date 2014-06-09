@@ -44,14 +44,16 @@ public class HBaseUtilTest extends TestCase {
         person3.put("basic:gender", "m");
         person3.put("atemp:interest", "文学");
 
-//        List<Map<String, String>> persons = new ArrayList<Map<String, String>>();
-//        persons.add(person2);
-//        persons.add(person3);
+        List<Map<String, String>> persons = new ArrayList<Map<String, String>>();
+        person2.put(HBaseUtil.ROW_KEY, personID2);
+        persons.add(person2);
+        person3.put(HBaseUtil.ROW_KEY, personID3);
+        persons.add(person3);
 
         HBaseUtil.addData(personID1, tableName, person1);
 
-        HBaseUtil.addData(personID2, tableName, person2);
-        HBaseUtil.addData(personID2, tableName, person3);
+//        HBaseUtil.addData(personID2, tableName, person2);
+//        HBaseUtil.addData(personID2, tableName, person3);
 //        HBaseUtil.addData(persons);
 
         ResultHandler handler = new ResultHandler(){

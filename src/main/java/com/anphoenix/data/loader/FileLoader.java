@@ -11,6 +11,7 @@ import java.io.IOException;
  * Created by stefanie on 6/5/14.
  */
 public class FileLoader {
+
     public void load(String filePath, ObjectType type){
         try {
             BufferedReader br = new BufferedReader(new FileReader(filePath));

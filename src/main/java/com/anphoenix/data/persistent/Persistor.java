@@ -19,9 +19,7 @@ public abstract class Persistor {
         }
     }
 
-    public void save(Object obj){
+    abstract public void save(Object obj);
 
-    }
 
-    public abstract void savePerson(Person person);
 }

@@ -20,7 +20,7 @@ public class TypeConvertor {
     }
 
     public static Boolean getBool(String str){
-        return "0".equals(str) ? false : true;
+        return "true".equalsIgnoreCase(str)? true : false;
     }
 
     public static Person.Gender getGender(String str){
