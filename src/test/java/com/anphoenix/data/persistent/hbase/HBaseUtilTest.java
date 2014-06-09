@@ -6,7 +6,9 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HBaseUtilTest extends TestCase {
@@ -25,6 +27,7 @@ public class HBaseUtilTest extends TestCase {
         person1.put("basic:name", "Hellena");
         person1.put("basic:city", "北京");
         person1.put("basic:gender", "f");
+        person1.put("basic:isvip", "0");
         person1.put("atemp:interest", "偶像剧,小王子");
 
         String personID2 = "11387";
@@ -41,9 +44,15 @@ public class HBaseUtilTest extends TestCase {
         person3.put("basic:gender", "m");
         person3.put("atemp:interest", "文学");
 
+//        List<Map<String, String>> persons = new ArrayList<Map<String, String>>();
+//        persons.add(person2);
+//        persons.add(person3);
+
         HBaseUtil.addData(personID1, tableName, person1);
+
         HBaseUtil.addData(personID2, tableName, person2);
         HBaseUtil.addData(personID2, tableName, person3);
+//        HBaseUtil.addData(persons);
 
         ResultHandler handler = new ResultHandler(){
             @Override

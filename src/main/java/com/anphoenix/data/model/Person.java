@@ -17,6 +17,7 @@ public class Person {
     String screenName;
     String province;
     String city;
+    String regTime;
     Gender gender;
     Boolean verified;
     Integer friendsCount;
@@ -26,14 +27,13 @@ public class Person {
 
     //Mined Interest Data
     String[] interests;
-
     //Mined Social Network Attribute
     Map<String, Double> influences;
 
     //Temp data in analytics
     Map<String, Object> tempData;
 
-    public Person(String personID, String screenName, String province, String city, Gender gender, Boolean verified, Integer friendsCount, Integer followCount, Integer weiboCount, String description, String[] interests, Map<String, Double> influences, Map<String, Object> tempData) {
+    public Person(String personID, String screenName, String province, String city, String regTime, Gender gender, Boolean verified, Integer friendsCount, Integer followCount, Integer weiboCount, String description, String[] interests, Map<String, Double> influences, Map<String, Object> tempData) {
         this.personID = personID;
         this.screenName = screenName;
         this.province = province;
@@ -53,15 +53,17 @@ public class Person {
     }
 
     public Person(String[] args){
-        this.personID = args[0];
-        this.screenName = args[1];
-        this.province = args[2];
-        this.city = args[3];
-        this.gender = TypeConvertor.getGender(args[4]);
-        this.verified = TypeConvertor.getBool(args[5]);
-        this.friendsCount = TypeConvertor.getInt(args[6]);
-        this.followCount = TypeConvertor.getInt(args[7]);
-        this.weiboCount = TypeConvertor.getInt(args[8]);
+        int i = 0;
+        this.personID = args[i++];
+        this.screenName = args[i++];
+        this.province = args[i++];
+        this.city = args[i++];
+        this.regTime = args[i++];
+        this.gender = TypeConvertor.getGender(args[i++]);
+        this.verified = TypeConvertor.getBool(args[i++]);
+        this.friendsCount = TypeConvertor.getInt(args[i++]);
+        this.followCount = TypeConvertor.getInt(args[i++]);
+        this.weiboCount = TypeConvertor.getInt(args[i++]);
     }
 
     public String getPersonID() {

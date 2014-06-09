@@ -8,6 +8,8 @@ import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +37,29 @@ public class HBaseUtil {
             admin.createTable(desc);
             System.out.println("create table Success!");
         }
+    }
+
+    public static void addData(String tableName, List<Map<String, String>> objects)
+            throws IOException {
+        HTable table = new HTable(conf, Bytes.toBytes(tableName));
+        List<Put> puts = new ArrayList<Put>();
+        for(Map<String, String> object : objects){
+            String rowKey = object.get("rowkey");
+            Put put = new Put(Bytes.toBytes(rowKey));
+
+            for(Map.Entry<String, String> attr : object.entrySet()){
+                String[] keys = attr.getKey().split(":");
+                if(keys.length < 2) {
+                    //TODO: LOG THE ERROR
+                    continue;
+                }
+                put.add(Bytes.toBytes(keys[0]),
+                        Bytes.toBytes(keys[1]), Bytes.toBytes(attr.getValue()));
+            }
+        }
+        table.put(puts);
+        //TODO: LOG THE SUCCESS
+        System.out.println("add data Success!");
     }
 
     public static void addData(String rowKey, String tableName, Map<String, String> object)
