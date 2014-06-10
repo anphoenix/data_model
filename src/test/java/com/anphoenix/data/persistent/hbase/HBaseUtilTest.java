@@ -17,9 +17,11 @@ public class HBaseUtilTest extends TestCase {
     public void testMainFunction() throws Exception {
 
         // create table
-        String tableName = "person";
+        String tableName = "test";
         String[] family = { "basic", "atemp" };
+        assertEquals(false, HBaseUtil.isTableExist(tableName));
         HBaseUtil.creatTable(tableName, family);
+        assertEquals(true, HBaseUtil.isTableExist(tableName));
 
         // insert data to table
         String personID1 = "10457";
@@ -50,11 +52,11 @@ public class HBaseUtilTest extends TestCase {
         person3.put(HBaseUtil.ROW_KEY, personID3);
         persons.add(person3);
 
-        HBaseUtil.addData(personID1, tableName, person1);
+        HBaseUtil.addData(tableName, personID1, person1);
 
 //        HBaseUtil.addData(personID2, tableName, person2);
 //        HBaseUtil.addData(personID2, tableName, person3);
-//        HBaseUtil.addData(persons);
+        HBaseUtil.addData(tableName, persons);
 
         ResultHandler handler = new ResultHandler(){
             @Override
@@ -70,8 +72,8 @@ public class HBaseUtilTest extends TestCase {
                 }
             }
         };
-        System.out.println("Get the info of person 1");
-        HBaseUtil.getResult(tableName, personID1, handler);
+        System.out.println("Get the info of person 2");
+        HBaseUtil.getResult(tableName, personID2, handler);
         System.out.println("-------------------------------------------");
 
         System.out.println("Scan the person record");
@@ -104,6 +106,7 @@ public class HBaseUtilTest extends TestCase {
         HBaseUtil.deleteAllColumn(tableName, personID1);
 
         HBaseUtil.deleteTable(tableName);
+        assertEquals(false, HBaseUtil.isTableExist(tableName));
 
     }
 }

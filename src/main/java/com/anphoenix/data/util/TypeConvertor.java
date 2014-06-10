@@ -1,7 +1,5 @@
 package com.anphoenix.data.util;
 
-import com.anphoenix.data.model.Person;
-
 /**
  * Created by stefanie on 6/5/14.
  */
@@ -23,7 +21,4 @@ public class TypeConvertor {
         return "true".equalsIgnoreCase(str)? true : false;
     }
 
-    public static Person.Gender getGender(String str){
-        return "f".equalsIgnoreCase(str) ? Person.Gender.FEMALE : Person.Gender.MALE;
-    }
 }

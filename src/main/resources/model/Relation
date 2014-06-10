@@ -1,0 +1,3 @@
+a:t     #`follower` bigint(20) NOT NULL DEFAULT '0',
+a:s     #`host` bigint(20) NOT NULL DEFAULT '0',
+rowkey=a:t-a:s

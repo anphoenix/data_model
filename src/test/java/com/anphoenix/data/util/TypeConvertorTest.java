@@ -1,6 +1,5 @@
 package com.anphoenix.data.util;
 
-import com.anphoenix.data.model.Person;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -40,17 +39,5 @@ public class TypeConvertorTest extends TestCase {
 
         boolean other = TypeConvertor.getBool(3);
         assertEquals(true, other);
-    }
-
-    @Test
-    public void testGetGenderFromStr() throws Exception {
-        Person.Gender female = TypeConvertor.getGender("F");
-        assertEquals(Person.Gender.FEMALE, female);
-
-        Person.Gender male = TypeConvertor.getGender("M");
-        assertEquals(Person.Gender.MALE, male);
-
-        Person.Gender other = TypeConvertor.getGender("L");
-        assertEquals(Person.Gender.MALE, other);
     }
 }

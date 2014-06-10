@@ -41,7 +41,12 @@ public class HBaseUtil {
         }
     }
 
-    public static void addData(String tableName, List<Map<String, String>> objects)
+    public static boolean isTableExist(String tableName) throws IOException{
+        HBaseAdmin admin = new HBaseAdmin(conf);
+        return admin.tableExists(tableName);
+    }
+
+    public static int addData(String tableName, List<Map<String, String>> objects)
             throws IOException {
         HTable table = new HTable(conf, Bytes.toBytes(tableName));
         List<Put> puts = new ArrayList<Put>();
@@ -58,13 +63,15 @@ public class HBaseUtil {
                 put.add(Bytes.toBytes(keys[0]),
                         Bytes.toBytes(keys[1]), Bytes.toBytes(attr.getValue()));
             }
+            puts.add(put);
         }
         table.put(puts);
         //TODO: LOG THE SUCCESS
         System.out.println("add data Success!");
+        return puts.size();
     }
 
-    public static void addData(String rowKey, String tableName, Map<String, String> object)
+    public static void addData(String tableName, String rowKey, Map<String, String> object)
             throws IOException {
         Put put = new Put(Bytes.toBytes(rowKey));
         HTable table = new HTable(conf, Bytes.toBytes(tableName));
