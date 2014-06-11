@@ -1,5 +1,5 @@
 rowkey  # `id` bigint(20) NOT NULL DEFAULT '0',
-a.name  #  `name` varchar(100) NOT NULL,
+a.n  #  `name` varchar(100) NOT NULL,
 a:p     #  `province` varchar(40) DEFAULT NULL,
 a:c     #  `city` varchar(40) DEFAULT NULL,
 a:t     #  `regTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,9 @@ public class HBaseUtil {
     static Configuration conf = null;
     static {
         conf = HBaseConfiguration.create();
-        conf.set("hbase.zookeeper.quorum", "localhost");
+        conf.set("hbase.zookeeper.quorum", "9.123.123.198");
+        conf.set("hbase.zookeeper.property.clientPort", "2222");
+
     }
 
     public static void creatTable(String tableName, String[] family)
@@ -63,11 +66,21 @@ public class HBaseUtil {
                 put.add(Bytes.toBytes(keys[0]),
                         Bytes.toBytes(keys[1]), Bytes.toBytes(attr.getValue()));
             }
-            puts.add(put);
+            try{
+                table.validatePut(put);
+                puts.add(put);
+            } catch (IllegalArgumentException e) {
+                //e.printStackTrace();
+                System.out.println("Incomplete data found. ");
+                for(Map.Entry<String, String> item : object.entrySet()){
+                    System.out.println("Map: " + item.getKey() + " " + item.getValue());
+                }
+            }
+
         }
-        table.put(puts);
+            table.put(puts);
         //TODO: LOG THE SUCCESS
-        System.out.println("add data Success!");
+        System.out.printf("Successfully add data %d record.\n", puts.size());
         return puts.size();
     }
 

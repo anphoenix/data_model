@@ -2,6 +2,7 @@ package com.anphoenix.data.loader;
 
 import com.anphoenix.data.model.ObjectType;
 import com.anphoenix.data.persistent.hbase.HBaseUtil;
+import com.anphoenix.data.util.TypeConvertor;
 
 import java.io.*;
 import java.util.*;
@@ -49,8 +50,8 @@ public class FileLoader {
                 //TODO: ADD FAULT DETECTION FOR INCOMPLETE DATA
                 for(int i = 0; i < args.length; i++){
                     if(!"IGNORE".equalsIgnoreCase(propertiesMap.get(i))){
-                        System.out.println(propertiesMap.get(i));
-                        System.out.println(args[i]);
+                        //System.out.println(propertiesMap.get(i));
+                        //System.out.println(args[i]);
                         obj.put(propertiesMap.get(i), args[i]);
                     }
                 }
@@ -73,9 +74,10 @@ public class FileLoader {
                         builder.append(obj.get(ruleItem));
                     }
                     obj.put("rowkey", builder.toString());
-                    System.out.println("generated rowkey" + builder.toString());
+                    objects.add(obj);
+                    //System.out.println("generated rowkey" + builder.toString());
                 }
-                if(objects.size() > batchNum){
+                if(objects.size() >= batchNum){
                     recordNum += insertData(tableName, objects);
                 }
             }
@@ -95,14 +97,24 @@ public class FileLoader {
         }
     }
 
-    private static int insertData(String tableName, List<Map<String, String>> objects) throws Exception{
-        if(! HBaseUtil.isTableExist(tableName)){
-            String[] cfs = {"a", "b"};
-            HBaseUtil.creatTable(tableName, cfs);
+    private static int insertData(String tableName, List<Map<String, String>> objects){
+        try {
+            if(! HBaseUtil.isTableExist(tableName)){
+                String[] cfs = {"a", "b"};
+                HBaseUtil.creatTable(tableName, cfs);
+            }
+            int insertNum = HBaseUtil.addData(tableName, objects);
+            objects.clear();
+            return insertNum;
+        } catch (Exception e) {
+            e.printStackTrace();
+//            for(Map<String, String> obj : objects){
+//                    for(Map.Entry<String, String> item : obj.entrySet()){
+//                        System.out.println("Map: " + item.getKey() + " " + item.getValue());
+//                    }
+//                }
+            return 0;
         }
-        int insertNum = HBaseUtil.addData(tableName, objects);
-        objects.clear();
-        return insertNum;
     }
 
     public static List<String> loadMap(String filePath){
@@ -130,5 +142,15 @@ public class FileLoader {
             if(!keys.contains(item)) throw new RuntimeException("Generation Rule contains un-existed key");
         }
         return items;
+    }
+
+    public static void main(String[] args){
+        String[] newargs = {"/opt/datasets/weibo/small_data/weibo.txt", "WEIBO", "100000"};
+        args = newargs;
+        if(args.length < 3){
+            System.out.println("Please provide parameters: file path, object type, batched number");
+            System.exit(-1);
+        }
+        FileLoader.load(args[0], ObjectType.valueOf(args[1]), TypeConvertor.getInt(args[2]));
     }
 }

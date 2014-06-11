@@ -1,5 +1,6 @@
 package com.anphoenix.data.util;
 
+import com.anphoenix.data.model.ObjectType;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -27,6 +28,12 @@ public class TypeConvertorTest extends TestCase {
         boolean other = TypeConvertor.getBool("other");
         assertEquals(false, other);
 
+    }
+
+    @Test
+    public void testGetEnum() {
+        ObjectType type = ObjectType.valueOf("PERSON");
+        assertEquals(ObjectType.PERSON, type);
     }
 
     @Test
