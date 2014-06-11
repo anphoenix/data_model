@@ -1,0 +1,6 @@
+rowkey  #  `weiboId` bigint(20) NOT NULL DEFAULT '0',
+a:pid   #  `id` bigint(20) NOT NULL DEFAULT '0',
+a:tn    #  `twNum` int(20) DEFAULT '1',
+a:cn    #  `comNum` int(20) DEFAULT '1',
+a:ct    #  `createTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+a:t     #  `status` text,

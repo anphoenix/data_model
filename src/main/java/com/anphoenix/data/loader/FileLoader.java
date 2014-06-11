@@ -31,6 +31,12 @@ public class FileLoader {
 
     public static void load(String filePath, String mapPath, String splitor, int batchNum){
         List<String> propertiesMap = loadMap(mapPath);
+        //parse the rowkey generation rule
+        String[] ruleItems = null;
+        if(propertiesMap.size() > 0 && propertiesMap.get(propertiesMap.size() - 1).startsWith("rowkey=")){
+            String generationRule = propertiesMap.get(propertiesMap.size() - 1);
+            ruleItems = parseGenerationRule(generationRule, propertiesMap);
+        }
         String tableName = new File(mapPath).getName();
         try {
             BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -43,15 +49,32 @@ public class FileLoader {
                 //TODO: ADD FAULT DETECTION FOR INCOMPLETE DATA
                 for(int i = 0; i < args.length; i++){
                     if(!"IGNORE".equalsIgnoreCase(propertiesMap.get(i))){
-                        //System.out.println(propertiesMap.get(i));
-                        //System.out.println(args[i]);
+                        System.out.println(propertiesMap.get(i));
+                        System.out.println(args[i]);
                         obj.put(propertiesMap.get(i), args[i]);
                     }
                 }
                 //ignore all the lines without rowkey
                 // also fix empty line split problem (split will return "" when given a empty line)
-                if(obj.get("rowkey") != null && !"".equals(obj.get("rowkey")))
-                    objects.add(obj);
+                if(obj.get("rowkey") != null){
+                    if(!"".equals(obj.get("rowkey"))){
+                        objects.add(obj);
+                    }
+                } else if(ruleItems != null){
+                    //generate rowkey based on defined rules
+                    StringBuilder builder = new StringBuilder();
+                    boolean isnFirst = false;
+                    for(String ruleItem : ruleItems){
+                        if(isnFirst){
+                            builder.append("-");
+                        } else {
+                            isnFirst = true;
+                        }
+                        builder.append(obj.get(ruleItem));
+                    }
+                    obj.put("rowkey", builder.toString());
+                    System.out.println("generated rowkey" + builder.toString());
+                }
                 if(objects.size() > batchNum){
                     recordNum += insertData(tableName, objects);
                 }
@@ -82,7 +105,7 @@ public class FileLoader {
         return insertNum;
     }
 
-    private static List<String> loadMap(String filePath){
+    public static List<String> loadMap(String filePath){
         List<String> list = new ArrayList<String>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -90,18 +113,22 @@ public class FileLoader {
             while ((line = br.readLine()) != null) {
                 String[] args = line.split("\\s");
                 //handle composite rowkey
-                String key = args[0];
-                if(key.startsWith("rowkey=")){
-                    //parse rowkey generator
-                    //handle rowkey generator
-                } else {
+                if(!"".equals(args[0]))
                     list.add(args[0]);
-                }
             }
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public static String[] parseGenerationRule(String rule, List<String> keys) throws RuntimeException{
+        rule = rule.substring(rule.indexOf("=") + 1); //a:t-a:s
+        String[] items = rule.split("-");
+        for(String item : items){
+            if(!keys.contains(item)) throw new RuntimeException("Generation Rule contains un-existed key");
+        }
+        return items;
     }
 }
