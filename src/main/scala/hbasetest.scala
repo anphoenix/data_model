@@ -57,14 +57,14 @@ object HbaseTest{
 	}
 	
 */
-        var userinfo=HBaseUtils.readFromHBase(tableName,"a",sc)
+        var userinfo=HBaseUtils.readFromHBase(tableName,"a",sc, "master","2222")
 println("snow: " + userinfo.first)
 
 var m=userinfo.first
 m += "degree"-> "985"
 var mli = List(m)
 var one=sc.parallelize(mli)
-HBaseUtils.saveAsHBase(one,tableName,"a")
+HBaseUtils.saveAsHBase(one,tableName,"a","master","2222")
 
 	sc.stop()
   }

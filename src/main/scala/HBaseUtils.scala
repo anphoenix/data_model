@@ -14,8 +14,6 @@ import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.util.Bytes
 
 import org.apache.spark._
-import org.apache.spark.graphx._
-import org.apache.spark.graphx.impl._
 import org.apache.spark.rdd._
 import org.apache.hadoop.mapred.JobConf
 
@@ -35,10 +33,10 @@ object HBaseUtils{
         }
 
 
- def saveAsHBase(rdd:RDD[Map[String,String]], tableName:String, cfName:String):Unit= {
+ def saveAsHBase(rdd:RDD[Map[String,String]], tableName:String, cfName:String, hbaseMaster:String, port:String):Unit= {
         var conf = HBaseConfiguration.create()
-        conf.set("hbase.zookeeper.property.clientPort", "2222")
-        conf.set("hbase.zookeeper.quorum", "master")
+        conf.set("hbase.zookeeper.property.clientPort", port)
+        conf.set("hbase.zookeeper.quorum", hbaseMaster)
 
         val admin = new HBaseAdmin(conf)
         if(!admin.isTableAvailable(tableName)) {
@@ -58,12 +56,12 @@ object HBaseUtils{
 
 
  
-  def readFromHBase(tableName:String, cfName:String, sc:SparkContext)={
+  def readFromHBase(tableName:String, cfName:String, sc:SparkContext, hbaseMaster:String, port:String)={
 	var conf = HBaseConfiguration.create()
 	conf.set(TableInputFormat.INPUT_TABLE, tableName)
 	conf.set(TableInputFormat.SCAN_COLUMN_FAMILY, cfName)
-	conf.set("hbase.zookeeper.property.clientPort", "2222")
-	conf.set("hbase.zookeeper.quorum", "master")
+	conf.set("hbase.zookeeper.property.clientPort", port)
+	conf.set("hbase.zookeeper.quorum", hbaseMaster)
 
         val rdde = sc.newAPIHadoopRDD(conf, classOf[TableInputFormat],
            classOf[org.apache.hadoop.hbase.io.ImmutableBytesWritable],
