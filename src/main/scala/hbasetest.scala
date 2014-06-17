@@ -18,8 +18,6 @@ import org.apache.spark.graphx._
 import org.apache.spark.rdd._
 import org.apache.hadoop.mapred.JobConf
 
-import com.gensler.scalavro.types.AvroType
-import scala.util.{ Try, Success, Failure }
 import java.io.ByteArrayOutputStream
 import java.io.ByteArrayInputStream
 import java.nio.ByteBuffer
